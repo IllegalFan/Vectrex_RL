@@ -6,8 +6,15 @@
 #include "osint.h"
 #include "e8910.h"
 #include "vecx.h"
+#include "sys/types.h"
+#include "sys/ipc.h"
+#include "sys/msg.h"
+
+#include "type_definitions.h"
 
 #define EMU_TIMER 20 /* the emulators heart beats at 20 milliseconds */
+
+#define BUFF_SIZE 16
 
 static SDL_Window *screen = NULL;
 static SDL_Renderer *renderer= NULL;
@@ -16,6 +23,12 @@ static SDL_Texture *overlay = NULL;
 static long scl_factor;
 static long offx;
 static long offy;
+
+typedef struct {
+	long  data_type;
+	//int   data_num;
+	unsigned char  data_buff[BUFF_SIZE];
+} t_data;
 
 void osint_render(void){
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -80,106 +93,75 @@ void resize(int width, int height){
 	offy = (screeny - ALG_MAX_Y / scl_factor) / 2;
 }
 
-static void readevents(){
-	SDL_Event e;
-	while(SDL_PollEvent(&e)){
-		switch(e.type){
-			case SDL_QUIT:
-				exit(EXIT_SUCCESS);
-				break;
-			case SDL_WINDOWEVENT:
-				switch (e.window.event) {
-					case SDL_WINDOWEVENT_RESIZED:
-						resize(e.window.data1, e.window.data2);
-						break;
-					case SDL_WINDOWEVENT_SIZE_CHANGED:
-						resize(e.window.data1, e.window.data2);
-						break;
-				}
-				break;
-			case SDL_KEYDOWN:
-				switch(e.key.keysym.sym){
-					case SDLK_ESCAPE:
-						exit(EXIT_SUCCESS);
-					case SDLK_a:
-						snd_regs[14] &= ~0x01;
-						break;
-					case SDLK_s:
-						snd_regs[14] &= ~0x02;
-						break;
-					case SDLK_d:
-						snd_regs[14] &= ~0x04;
-						break;
-					case SDLK_f:
-						snd_regs[14] &= ~0x08;
-						break;
-					case SDLK_LEFT:
-						alg_jch0 = 0x00;
-						break;
-					case SDLK_RIGHT:
-						alg_jch0 = 0xff;
-						break;
-					case SDLK_UP:
-						alg_jch1 = 0xff;
-						break;
-					case SDLK_DOWN:
-						alg_jch1 = 0x00;
-						break;
-					default:
-						break;
-				}
-				break;
-			case SDL_KEYUP:
-				switch(e.key.keysym.sym){
-					case SDLK_a:
-						snd_regs[14] |= 0x01;
-						break;
-					case SDLK_s:
-						snd_regs[14] |= 0x02;
-						break;
-					case SDLK_d:
-						snd_regs[14] |= 0x04;
-						break;
-					case SDLK_f:
-						snd_regs[14] |= 0x08;
-						break;
-					case SDLK_LEFT:
-						alg_jch0 = 0x80;
-						break;
-					case SDLK_RIGHT:
-						alg_jch0 = 0x80;
-						break;
-					case SDLK_UP:
-						alg_jch1 = 0x80;
-						break;
-					case SDLK_DOWN:
-						alg_jch1 = 0x80;
-						break;
-					default:
-						break;
-				}
-				break;
-			default:
-				break;
-		}
+static void readevents(int ctrlInput){
+	//reset all inputs
+	snd_regs[14] |= 0x01; //a
+	snd_regs[14] |= 0x02; //s
+	snd_regs[14] |= 0x04; //d
+	snd_regs[14] |= 0x08; //f
+	alg_jch0 = 0x80;	  //left
+	alg_jch0 = 0x80;	  //right
+	alg_jch1 = 0x80;	  //up
+	alg_jch1 = 0x80;	  //down
+	switch(ctrlInput){
+		case 1: //a
+			snd_regs[14] &= ~0x01;
+			break;
+		case 2: //s
+			snd_regs[14] &= ~0x02;
+			break;
+		case 3: //d
+			snd_regs[14] &= ~0x04;
+			break;
+		case 4: //f
+			snd_regs[14] &= ~0x08;
+			break;
+		case 5: //left
+			alg_jch0 = 0x00;
+			break;
+		case 6: //right
+			alg_jch0 = 0xff;
+			break;
+		case 7: //up
+			alg_jch1 = 0xff;
+			break;
+		case 8: //down
+			alg_jch1 = 0x00;
+			break;
+		default:
+			break;
 	}
 }
 
 void osint_emuloop(){
-	Uint32 next_time = SDL_GetTicks() + EMU_TIMER;
 	vecx_reset();
+	int msqid;
+	t_data data;
+	int ctrlInput;
+	if ( -1 == ( msqid = msgget( (key_t)1234, IPC_CREAT | 0666)))
+	{
+		perror( "msgget() failed");
+		exit( 1);
+	}
 	for(;;){
-		vecx_emu((VECTREX_MHZ / 1000) * EMU_TIMER);
-		readevents();
-
+		if ( -1 == msgrcv( msqid, &data, sizeof( t_data) - sizeof( long), 0, 0))
 		{
-			Uint32 now = SDL_GetTicks();
-			if(now < next_time)
-				SDL_Delay(next_time - now);
-			else
-				next_time = now;
-			next_time += EMU_TIMER;
+			perror( "msgrcv() failed");
+			exit( 1);
 		}
+		if(data.data_type == TYPE_INTEGER)
+		{
+			memcpy(&ctrlInput, data.data_buff, sizeof(int));
+			printf("\n");
+			printf("Interpreted as Integer: %d", ctrlInput);
+		}
+		else if(data.data_type == TYPE_STRING)
+		{
+			ctrlInput = 5;
+			printf("Interpreted as string: %15s\n", data.data_buff);
+		}
+		readevents(ctrlInput);
+		vecx_emu((VECTREX_MHZ / 1000) * EMU_TIMER);
 	}
 }
 
