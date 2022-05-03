@@ -135,32 +135,48 @@ static void readevents(int ctrlInput){
 
 void osint_emuloop(){
 	vecx_reset();
-	int msqid;
-	t_data data;
+	int frame_count = 0;
+	int msqid_rc;
+	int msqid_sd;
+	t_data data_rc;
+	t_data data_sd;
 	int ctrlInput;
-	if ( -1 == ( msqid = msgget( (key_t)1234, IPC_CREAT | 0666)))
+	if ( -1 == ( msqid_rc = msgget( (key_t)1234, IPC_CREAT | 0666)))
+	{
+		perror( "msgget() failed");
+		exit( 1);
+	}
+	if ( -1 == ( msqid_sd = msgget( (key_t)1235, IPC_CREAT | 0666)))
 	{
 		perror( "msgget() failed");
 		exit( 1);
 	}
 	for(;;){
-		if ( -1 == msgrcv( msqid, &data, sizeof( t_data) - sizeof( long), 0, 0))
+		if ( -1 == msgrcv( msqid_rc, &data_rc, sizeof( t_data) - sizeof( long), 0, 0))
 		{
 			perror( "msgrcv() failed");
 			exit( 1);
 		}
-		if(data.data_type == TYPE_INTEGER)
+		if(data_rc.data_type == TYPE_INTEGER)
 		{
-			memcpy(&ctrlInput, data.data_buff, sizeof(int));
+			memcpy(&ctrlInput, data_rc.data_buff, sizeof(int));
 			printf("\n");
 			printf("Interpreted as Integer: %d", ctrlInput);
 		}
-		else if(data.data_type == TYPE_STRING)
+		else if(data_rc.data_type == TYPE_STRING)
 		{
 			ctrlInput = 5;
-			printf("Interpreted as string: %15s\n", data.data_buff);
+			printf("Interpreted as string: %15s\n", data_rc.data_buff);
 		}
 		readevents(ctrlInput);
+		data_sd.data_type = TYPE_INTEGER;
+		memcpy(data_sd.data_buff, &frame_count, sizeof(int));
+		if ( -1 == msgsnd( msqid_sd, &data_sd, sizeof( t_data) - sizeof( long), 0))
+		{
+			perror( "msgsnd() failed");
+			exit(1);
+		}
+		frame_count++;
 		vecx_emu((VECTREX_MHZ / 1000) * EMU_TIMER);
 	}
 }
