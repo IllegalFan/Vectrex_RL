@@ -17,43 +17,43 @@ static unsigned snd_select;
 
 /* the via 6522 registers */
 
-static unsigned via_ora;
-static unsigned via_orb;
-static unsigned via_ddra;
-static unsigned via_ddrb;
+static unsigned via_ora;   /* Output Register A */
+static unsigned via_orb;   /* Output Register B */
+static unsigned via_ddra;  /* Data Direction Register A */
+static unsigned via_ddrb;  /* Data Direction Register B */
 static unsigned via_t1on;  /* is timer 1 on? */
 static unsigned via_t1int; /* are timer 1 interrupts allowed? */
-static unsigned via_t1c;
-static unsigned via_t1ll;
-static unsigned via_t1lh;
+static unsigned via_t1c;   /* T1 High-Order Counter ?? */
+static unsigned via_t1ll;  /* T1 Low-Order Latches */
+static unsigned via_t1lh;  /* T1 High-Order Latches */
 static unsigned via_t1pb7; /* timer 1 controlled version of pb7 */
 static unsigned via_t2on;  /* is timer 2 on? */
 static unsigned via_t2int; /* are timer 2 interrupts allowed? */
 static unsigned via_t2c;
 static unsigned via_t2ll;
 static unsigned via_sr;
-static unsigned via_srb;   /* number of bits shifted so far */
-static unsigned via_src;   /* shift counter */
+static unsigned via_srb; /* number of bits shifted so far */
+static unsigned via_src; /* shift counter */
 static unsigned via_srclk;
 static unsigned via_acr;
-static unsigned via_pcr;
-static unsigned via_ifr;
-static unsigned via_ier;
+static unsigned via_pcr; /* Peripheral Control Register */
+static unsigned via_ifr; /* Interrupt Flag Register */
+static unsigned via_ier; /* Interrupt Enable Register */
 static unsigned via_ca2;
-static unsigned via_cb2h;  /* basic handshake version of cb2 */
-static unsigned via_cb2s;  /* version of cb2 controlled by the shift register */
+static unsigned via_cb2h; /* basic handshake version of cb2 */
+static unsigned via_cb2s; /* version of cb2 controlled by the shift register */
 
 /* analog devices */
 
-static unsigned alg_rsh;  /* zero ref sample and hold */
-static unsigned alg_xsh;  /* x sample and hold */
-static unsigned alg_ysh;  /* y sample and hold */
-static unsigned alg_zsh;  /* z sample and hold */
-unsigned alg_jch0;		  /* joystick direction channel 0 */
-unsigned alg_jch1;		  /* joystick direction channel 1 */
-unsigned alg_jch2;		  /* joystick direction channel 2 */
-unsigned alg_jch3;		  /* joystick direction channel 3 */
-static unsigned alg_jsh;  /* joystick sample and hold */
+static unsigned alg_rsh; /* zero ref sample and hold */
+static unsigned alg_xsh; /* x sample and hold */
+static unsigned alg_ysh; /* y sample and hold */
+static unsigned alg_zsh; /* z sample and hold */
+unsigned alg_jch0;       /* joystick direction channel 0 */
+unsigned alg_jch1;       /* joystick direction channel 1 */
+unsigned alg_jch2;       /* joystick direction channel 2 */
+unsigned alg_jch3;       /* joystick direction channel 3 */
+static unsigned alg_jsh; /* joystick sample and hold */
 
 static unsigned alg_compare;
 
