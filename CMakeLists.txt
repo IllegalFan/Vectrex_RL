@@ -18,3 +18,4 @@ set(CMAKE_CXX_EXTENSIONS        OFF)
 # vectrex emulator
 add_subdirectory(vecx)
 
+add_subdirectory(environment)
