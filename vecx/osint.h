@@ -1,20 +1,12 @@
 #ifndef __OSINT_H
 #define __OSINT_H
 
-/*extern char gbuffer[1024];*/
+#include "SDL.h"
 
-void init();
+void init(const char* romfilename, const char* cartfilename);
 
-void osint_render (void);
+void osint_emu(const unsigned int emu_frames);
 
-void osint_emuloop();
-void osint_emu(unsigned int emu_frames);
-
-void resize(int width, int height);
-
-void load_overlay(const char *filename);
-
-void open_window();
-void close_window();
+void periphery_emu(const SDL_Event input);
 
 #endif

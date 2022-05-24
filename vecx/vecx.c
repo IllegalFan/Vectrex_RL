@@ -1,14 +1,20 @@
 #include <stdio.h>
 #include "e6809.h"
 #include "vecx.h"
-#include "osint.h"
+#include "display.h"
 #include "e8910.h"
 
 #define einline __inline
 
+/* the display */
+
+extern Display display;
+
+/* memory */
+
 unsigned char rom[8192];
 unsigned char cart[32768];
-static unsigned char ram[1024];
+unsigned char ram[1024];
 
 /* the sound chip registers */
 
@@ -942,7 +948,7 @@ void vecx_emu (long cycles)
 			vector_t *tmp;
 
 			fcycles += FCYCLES_INIT;
-			osint_render ();
+			render(&display);
 
 			/* everything that was drawn during this pass now now enters
 			 * the erase list for the next pass.

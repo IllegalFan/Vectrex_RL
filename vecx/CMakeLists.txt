@@ -7,6 +7,8 @@ set(SOURCES
     vecx.c
     osint.h 
     osint.c
+    display.h
+    display.c
 )
 
 add_library(vecx 
@@ -19,5 +21,5 @@ target_compile_definitions(vecx
 )
 
 target_include_directories(vecx
-    PRIVATE /usr/include/SDL2
+    PUBLIC /usr/include/SDL2
 )
