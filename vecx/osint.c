@@ -29,82 +29,68 @@ void init(const char* romfilename, const char* cartfilename)
 	}
 }
 
-void periphery_emu(const SDL_Event input)
+// A certain periphery is interacted with if the according bit is set
+// A periphery gets activated (e.g. button pushed) at the first interaction, at the second it gets deactivated (e.g. button released)
+void periphery_emu(const uint8_t input)
 {
-	switch (input.type)
-	{
-		case SDL_KEYDOWN:
-			switch(input.key.keysym.sym)
-			{
-				case SDLK_a:
-					snd_regs[14] &= ~0x01;
-					break;
-				case SDLK_s:
-					snd_regs[14] &= ~0x02;
-					break;
-				case SDLK_d:
-					snd_regs[14] &= ~0x04;
-					break;
-				case SDLK_f:
-					snd_regs[14] &= ~0x08;
-					break;
-				case SDLK_LEFT:
-					alg_jch0 = 0x00;
-					break;
-				case SDLK_RIGHT:
-					alg_jch0 = 0xff;
-					break;
-				case SDLK_UP:
-					alg_jch1 = 0xff;
-					break;
-				case SDLK_DOWN:
-					alg_jch1 = 0x00;
-					break;
-				default:
-					break;
-			}
-			break;
-		case SDL_KEYUP:
-			switch(input.key.keysym.sym)
-			{
-				case SDLK_a:
-					snd_regs[14] |= 0x01;
-					break;
-				case SDLK_s:
-					snd_regs[14] |= 0x02;
-					break;
-				case SDLK_d:
-					snd_regs[14] |= 0x04;
-					break;
-				case SDLK_f:
-					snd_regs[14] |= 0x08;
-					break;
-				case SDLK_LEFT:
-					alg_jch0 = 0x80;
-					break;
-				case SDLK_RIGHT:
-					alg_jch0 = 0x80;
-					break;
-				case SDLK_UP:
-					alg_jch1 = 0x80;
-					break;
-				case SDLK_DOWN:
-					alg_jch1 = 0x80;
-					break;
-				default:
-					break;
-			}
-			break;
-		default:
-			break;
-	}
+	if (input == BTN_1)
+    {
+		printf("BTN_1\n");
+        snd_regs[14] ^= 0x01;
+    }
+	else if (input == BTN_2)
+    {
+		printf("BTN_2\n");
+        snd_regs[14] ^= 0x02;
+    }
+    else if (input == BTN_3)
+    {
+		printf("BTN_3\n");
+        snd_regs[14] ^= 0x04;
+    }
+    else if (input == BTN_4)
+    {
+		printf("BTN_4\n");
+        snd_regs[14] ^= 0x08;
+    }
+    else if (input == JOY_UP)
+    {
+		printf("JOY_UP\n");
+        alg_jch1 = (alg_jch0 == 0x80) ? 0xff : 0x80;
+    }
+    else if (input == JOY_DOWN)
+    {
+		printf("JOY_DOWN\n");
+        alg_jch1 = (alg_jch0 == 0x80) ? 0x00 : 0x80;
+    }
+    else if (input == JOY_LEFT)
+    {
+		printf("JOY_LEFT\n");
+        alg_jch0 = (alg_jch0 == 0x80) ? 0x00 : 0x80;
+    }
+    else if (input == JOY_RIGHT)
+    {
+		printf("JOY_RIGHT\n");
+        alg_jch0 = (alg_jch0 == 0x80) ? 0xff : 0x80;
+    }
+	else printf("NOOP\n");
 }
 
 void osint_emu(const unsigned int emu_frames) {
 	Uint32 next_time = SDL_GetTicks() + EMU_TIMER;
-
+	SDL_Event e;
 	for(unsigned int frames=0; frames<=emu_frames; ++frames) {
 		vecx_emu((VECTREX_MHZ / 1000) * EMU_TIMER);
+
+		#if 1
+		if(SDL_PollEvent(&e))
+		{
+			if(e.type == SDL_QUIT)
+			{
+				exit(EXIT_SUCCESS);
+			}
+		}
+		#endif
 
 		{
 			Uint32 now = SDL_GetTicks();
