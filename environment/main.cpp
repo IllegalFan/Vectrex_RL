@@ -28,7 +28,6 @@ struct timer
 
 /**
  * Fragen:
- * - Welches Spiel als Proof of Work? -> Wahlfach
  * - Eigenschaften Input-Bild (Dimension, Farbtiefe)?
  * - Live-training oder Hintergrund (SDL/Sound)?
  *      -> Introsequenz wegschneiden
@@ -37,44 +36,45 @@ struct timer
 int main(int argc, char** argv)
 {
     std::string cartfilename = std::string("frog_jump.bin");
+    
+    vecx_rl::environment env = vecx_rl::environment(25);
 
-    vecx_rl::environment env(cartfilename);
+    vecx_rl::reward_t r = 0;
+    
+    try
+    {
+        env.load_rom(cartfilename);
+    }
+    catch(vecx_rl::unsupported_rom& e)
+    {
+        std::cerr << e.what() << '\n';
+        std::exit(-1);
+    }
+
     
     vecx_rl::action a;
 
     std::srand(std::time(nullptr)); // use current time as seed for random generator
     uint16_t random_variable = 0;
-
-    for (size_t i = 0; i < 7; i++)
-    {
-        a.set_action(0x02);
-        env.step(a);
-        a.set_action(0x02);
-        env.step(a);
-    }
     
     std::vector<uint8_t> legal_actions = env.get_legal_actions();
 
-    while (true)
+    for(size_t episode = 0; episode < 10; ++episode)
     {
-        random_variable = std::rand();
-        a.set_action(
-            legal_actions.at(
-                random_variable % legal_actions.size()
-            )
-        );
-        env.step(a);
-        #if 0
-        random_variable = (std::rand() % 4) + 1;
-        a.press_button(random_variable);
-        //std::cout << random_variable << " ";
-        env.step(a);
-        
-        random_variable = (std::rand() % 4) + 1;
-        a.release_button(random_variable);
-        //std::cout << random_variable << "\n";
-        env.step(a);
-        #endif
+        while (!env.is_game_finished())
+        {
+            random_variable = std::rand();
+            a.set_action(
+                legal_actions.at(
+                    random_variable % legal_actions.size()
+                )
+            );
+            r += env.step(a);
+        }
+
+        std::cout << "Episode: " << episode << ", Score: " << r << "\n";
+        env.reset();
+        r = 0;
     }
 
 

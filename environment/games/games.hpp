@@ -1,8 +1,13 @@
+#pragma once
+
 #include "frog_jump.hpp"
 
-#include <string_view>
+#include <array>
+#include <memory>
 
-bool game_supported(std::string_view rom_name)
+namespace vecx_rl
 {
-    return true;
+    const std::array<std::unique_ptr<ROM>, 1> supported_games = {
+        std::make_unique<frog_jump>()
+    };
 }

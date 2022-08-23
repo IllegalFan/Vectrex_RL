@@ -2,13 +2,14 @@
 
 #include "../action.hpp"
 
-#include <array>
+#include <algorithm>
 #include <vector>
+#include <memory>
 
 namespace vecx_rl
 {
-    typedef int reward;
-
+    // max 16 bit possible on MC6809
+    typedef uint16_t reward_t;
 
     class ROM
     {
@@ -16,34 +17,46 @@ namespace vecx_rl
         ROM(std::vector<uint8_t> legal_actions);
         virtual ~ROM() {};
 
-    // reset
-    virtual void reset() = 0;
+        // reset
+        virtual void reset();
+ 
+        virtual std::unique_ptr<ROM> get_instance() const = 0;
 
-    // is end of game
-    virtual bool is_terminal() = 0;
+        // is end of game
+        virtual bool is_terminal() const = 0;
 
-    // get the most recently observed reward
-    virtual reward get_reward() = 0;
+        // get the most recently observed reward
+        virtual reward_t get_reward() const = 0;
 
-    // the rom-name
-    virtual const char* rom() = 0;
+        // the rom-name
+        virtual const char* get_name() const = 0;
 
-    // is an action part of the minimal set?
-    //virtual bool is_minimal(const SDL_KeyCode& a) = 0;
+        // calc reward and check if end is reached
+        virtual reward_t process_state() = 0;
 
-    // calc reward and check if end is reached
-    virtual void process_state() = 0;
+        inline bool is_action_legal(const action& input);
 
-    virtual bool is_action_legal(const action& input);
+        inline std::vector<uint8_t> get_legal_actions() const;
 
-    inline std::vector<uint8_t> get_legal_actions() const
+    protected:
+        const std::vector<uint8_t> legal_actions;
+        reward_t reward;
+        bool terminal;
+    };
+
+    /* Implementation */
+
+    bool ROM::is_action_legal(const action& input)
+    {
+        auto is_legal = std::find(begin(legal_actions), end(legal_actions), input.get_action());
+        return (is_legal != std::end(legal_actions));
+    }
+
+    std::vector<uint8_t> ROM::get_legal_actions() const
     {
         return legal_actions;
     }
 
-    protected:
-    const std::vector<uint8_t> legal_actions;
-    };
 } // namespace vecx_rl
 
 
