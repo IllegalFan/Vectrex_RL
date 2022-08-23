@@ -35,45 +35,36 @@ void periphery_emu(const uint8_t input)
 {
 	if (input == BTN_1)
     {
-		printf("BTN_1\n");
         snd_regs[14] ^= 0x01;
     }
 	else if (input == BTN_2)
     {
-		printf("BTN_2\n");
         snd_regs[14] ^= 0x02;
     }
     else if (input == BTN_3)
     {
-		printf("BTN_3\n");
         snd_regs[14] ^= 0x04;
     }
     else if (input == BTN_4)
     {
-		printf("BTN_4\n");
         snd_regs[14] ^= 0x08;
     }
     else if (input == JOY_UP)
     {
-		printf("JOY_UP\n");
         alg_jch1 = (alg_jch0 == 0x80) ? 0xff : 0x80;
     }
     else if (input == JOY_DOWN)
     {
-		printf("JOY_DOWN\n");
         alg_jch1 = (alg_jch0 == 0x80) ? 0x00 : 0x80;
     }
     else if (input == JOY_LEFT)
     {
-		printf("JOY_LEFT\n");
         alg_jch0 = (alg_jch0 == 0x80) ? 0x00 : 0x80;
     }
     else if (input == JOY_RIGHT)
     {
-		printf("JOY_RIGHT\n");
         alg_jch0 = (alg_jch0 == 0x80) ? 0xff : 0x80;
     }
-	else printf("NOOP\n");
 }
 
 void osint_emu(const unsigned int emu_frames) {

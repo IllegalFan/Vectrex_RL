@@ -2,8 +2,9 @@
 
 #include <cstdint>
 
-extern "C" {
-#include "periphery.h"
+extern "C" 
+{
+    #include "periphery.h"
 }
 
 namespace vecx_rl {
