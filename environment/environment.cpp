@@ -54,7 +54,7 @@ void environment::load_rom(const std::string& cartfilename)
         rom = (*supported_rom)->get_instance();
 
         // vectrex rom (contains firmware and minestorm game)
-        const char* romfilename = "../../vecx/rom.dat";
+        const char* romfilename = "../../vecx/rom_noIntro.dat";
         init(romfilename, cartfilename.c_str());
 
         reset();
