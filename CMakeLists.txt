@@ -19,3 +19,5 @@ set(CMAKE_CXX_EXTENSIONS        OFF)
 add_subdirectory(vecx)
 
 add_subdirectory(environment)
+
+add_subdirectory(libs/avir)

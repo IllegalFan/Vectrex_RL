@@ -5,6 +5,8 @@ add_executable(test
     environment.cpp
     action.hpp
     action.cpp
+    image.hpp
+    image.cpp
     games/ROM.hpp
     games/ROM.cpp
     games/unsupported_rom.hpp
@@ -17,6 +19,7 @@ add_executable(test
 target_include_directories(test
     PRIVATE ../vecx
     PRIVATE ./games
+    PRIVATE ../libs/avir
 )
 
 target_link_libraries(test 
@@ -24,4 +27,9 @@ target_link_libraries(test
     SDL2_gfx
     pthread
     vecx
+    avir
+)
+
+target_compile_definitions(test
+    PRIVATE DEBUG=0
 )

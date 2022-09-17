@@ -2,10 +2,11 @@
 
 using namespace vecx_rl;
 
-action::action() : event(0) 
-{ }
+action::action() : event(0)
+{
+}
 
-action::~action() { }
+action::~action() {}
 
 void action::set_action(const uint8_t action)
 {
