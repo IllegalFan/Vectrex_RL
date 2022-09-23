@@ -79,7 +79,7 @@ namespace vecx_rl
         bool sound;
         uint64_t emu_frames;
         // current game
-        std::unique_ptr<ROM> rom;
+        std::shared_ptr<ROM> rom;
         screenshot_creator sc;
     };
 

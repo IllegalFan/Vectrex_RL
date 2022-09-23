@@ -2,17 +2,18 @@
 
 extern "C"
 {
-    #include "vecx.h"
+#include "vecx.h"
 }
 
-#ifdef DEBUG 
+#ifdef DEBUG
 #include <iostream>
 #endif
 
 using namespace vecx_rl;
 
 frog_jump::frog_jump() : ROM({NOOP, BTN_2, BTN_4, JOY_LEFT, JOY_RIGHT})
-{ }
+{
+}
 
 frog_jump::~frog_jump()
 {
@@ -28,11 +29,6 @@ void frog_jump::reset()
     ram[0x83] = (unsigned char)0x00; // LSB
 }
 
-std::unique_ptr<ROM> frog_jump::get_instance() const
-{
-    return std::make_unique<frog_jump>();
-}
-
 bool frog_jump::is_terminal() const
 {
     return terminal;
@@ -40,19 +36,19 @@ bool frog_jump::is_terminal() const
 
 reward_t frog_jump::get_reward() const
 {
-    return reward; 
+    return reward;
 }
 
 const char* frog_jump::get_name() const
-{ 
-    return "frog_jump.bin"; 
+{
+    return "frog_jump.bin";
 }
 
-// NOTE: GCC builtin!
 // NOTE: Vecx is Big Endian
-reward_t frog_jump::process_state() 
+reward_t frog_jump::process_state()
 {
-    /*  
+    /*
+    Important variables from frog_jump and their location in the RAM:
     struct game_t
     {
         long unsigned int score;     = 0x82-0x83
@@ -63,14 +59,14 @@ reward_t frog_jump::process_state()
         unsigned int score_delay;    = 0x89
     };
     */
-    score = __builtin_bswap16(*((uint16_t*)(ram+0x82)));
-    // prevent underflow 
+    score = byte_swap16(*((uint16_t*)(ram + 0x82)));
+    // prevent underflow
     reward = (score != 0) ? score - last_score : 0;
     last_score = score;
-    
-    #ifdef DEBUG 
-        std::cout << "Score: " <<  __builtin_bswap16(*((uint16_t*)(ram+0x82))) << " , REWARD_" << reward << std::endl;
-    #endif
+
+#if DEBUG
+    std::cout << "Score: " << byte_swap16(*((uint16_t*)(ram + 0x82))) << " , REWARD_" << reward << std::endl;
+#endif
 
     uint16_t alive = (uint16_t)ram[0x88];
 

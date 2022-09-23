@@ -11,7 +11,7 @@ add_executable(test
     games/ROM.cpp
     games/unsupported_rom.hpp
     # list of supported games
-    games/games.hpp
+    games/roms.hpp
     games/frog_jump.hpp
     games/frog_jump.cpp
 )

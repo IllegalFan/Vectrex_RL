@@ -9,6 +9,7 @@ extern "C"
 #include "environment.hpp"
 #include "games.hpp"
 #include "image.hpp"
+#include "roms.hpp"
 
 #include <algorithm>
 
@@ -43,15 +44,15 @@ environment::~environment()
 void environment::load_rom(const std::string& cartfilename)
 {
     auto supported_rom = std::find_if(
-        std::begin(supported_games), std::end(supported_games),
-        [&cartfilename](const std::unique_ptr<ROM>& potential_rom)
+        std::begin(supported_roms), std::end(supported_roms),
+        [&cartfilename](const std::shared_ptr<ROM>& potential_rom)
         {
             return (potential_rom->get_name() == cartfilename);
         });
 
-    if (supported_rom != std::end(supported_games))
+    if (supported_rom != std::end(supported_roms))
     {
-        rom = (*supported_rom)->get_instance();
+        rom = *supported_rom;
 
         // vectrex rom (contains firmware and minestorm game)
         const char* romfilename = "../../vecx/rom_noIntro.dat";
