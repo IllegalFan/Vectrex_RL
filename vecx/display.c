@@ -22,14 +22,20 @@ Display display = {
     .renderer = NULL,
     .overlay = NULL};
 
-void open_window(Display* d)
+void open_window(Display* d, uint8_t show_window)
 {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
     {
         fprintf(stderr, "Failed to initialize SDL: %s\n", SDL_GetError());
         exit(-1);
     }
-    SDL_CreateWindowAndRenderer(d->width, d->height, SDL_WINDOW_RESIZABLE, &(d->screen), &(d->renderer));
+    Uint32 window_flags = SDL_WINDOW_RESIZABLE;
+    if (!show_window)
+    {
+        window_flags |= SDL_WINDOW_HIDDEN;
+    }
+
+    SDL_CreateWindowAndRenderer(d->width, d->height, window_flags, &(d->screen), &(d->renderer));
     if (d->screen == NULL || d->renderer == NULL)
     {
         fprintf(stderr, "Failed to initialize SDL window/renderer: %s\n", SDL_GetError());

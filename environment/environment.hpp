@@ -3,7 +3,7 @@
 /**
  * Restrictions:
  * - only solo player games
- * - no sound ?
+ * - do NOT touch vecx directly, could end in segfaults
  *
  * NOTE:
  * - Only one instance of environment can exist since vecx operates on global values!
@@ -15,33 +15,41 @@
 #include "unsupported_rom.hpp"
 
 #include <memory>
+#include <optional>
 #include <string>
 
 namespace vecx_rl
 {
+    /**
+     * Provides methods for interaction with the vecx emulator for reinforcement learning agents
+     */
     class environment
     {
     public:
         /**
          * Construct an environment which controls the vecx-emulator and the game.
-         * @param frames_per_step: Number of frames for which an input is emulated
-         * @param image_dims: Target dimensions of the image for the rl-agent
-         * @param enable_sound: Control sound
+         * @param frames_per_step: Number of frames for which vecx will emulate per step
+         * @param enable_sound: En-/Disable sound output of vecx
+         * @param enable_window: En-/Disable rendering of vecx
+         * @param image_dims: If the option has a value, the environment will take a screenshot per step.
+         * If both dimensions are > 0, the screenshot will be downsampled to the given dimensions. Format is: {width, height}.
+         * Else the screenshots will keep their original size: {495, 615}
          */
-        environment(uint64_t frames_per_step = 1,
-                    const vector_2D<uint16_t>& image_dims = {0, 0},
-                    bool enable_sound = false);
+        environment(
+            // vecx configuration
+            uint64_t frames_per_step = 1,
+            bool enable_window = true,
+            bool enable_sound = false,
+            // screenshot configuration
+            const std::optional<vector_2D<uint16_t>>& image_dims = {});
         ~environment();
 
-        /* Configuration */
-
         /**
-         * Check if rom with given name is supported. Throws `unsupported_rom` if not.
+         * Check if rom with given name is supported
          * @param carfilename: Name of game that should be emulated
+         * @throws unsupported_rom: Throws if rom is not supported. See vecx_rl::ROM for details
          */
         void load_rom(const std::string& carfilename);
-
-        /*  */
 
         /**
          * Emulate the configured number of frames with the given input
@@ -70,16 +78,20 @@ namespace vecx_rl
         inline std::vector<uint8_t> get_legal_actions() const;
 
         /**
-         * Get current frame as input for the rl-agent
+         * Get current frame as input for the reinforcement learning agent
          */
-        inline uint8_t* get_image();
+        std::optional<uint8_t*> get_image();
 
     private:
         // configuration flags
-        bool sound;
+        bool window_enabled;
+        bool sound_enabled;
+        bool screenshot_enabled;
+
         uint64_t emu_frames;
         // current game
         std::shared_ptr<ROM> rom;
+
         screenshot_creator sc;
     };
 
@@ -100,8 +112,4 @@ namespace vecx_rl
         return rom->get_reward();
     }
 
-    uint8_t* environment::get_image()
-    {
-        return sc.get_image();
-    }
 } // namespace vecx_rl

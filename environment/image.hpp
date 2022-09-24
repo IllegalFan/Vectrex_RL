@@ -23,11 +23,14 @@ namespace vecx_rl
     {
     public:
         /**
-         * Create a screenshot and downsample the image to the size given in <target_dimension>
-         * @param target_dimension: Dimensions of the downsampled image. Downsampling is disabled if any dimensions is <= 0
+         * Create a screenshot and downsample the image to the size given in <target_dimensions>
+         * @param target_dimensions: Dimensions of the downsampled image. Downsampling is disabled if any dimensions is <= 0
          */
-        screenshot_creator(vector_2D<uint16_t> target_dimension = {0, 0});
+        screenshot_creator(vector_2D<uint16_t> target_dimensions = {0, 0});
+
         ~screenshot_creator();
+
+        inline void set_target_dimensions(vector_2D<uint16_t> target_dimensions);
 
         /**
          * Return image as pixel array of size <width * height> and values in [0, 254]
@@ -53,12 +56,18 @@ namespace vecx_rl
             SDL_SetPaletteColors(s->format->palette, colors, 0, 256);
         }
 #endif
+
     private:
+        vector_2D<uint16_t> downsample_dims;
+        bool downsampling;
         uint8_t* sshot;
         uint8_t* sshot_downsampled;
-        bool downsampling;
-        vector_2D<uint16_t> downsample_dims;
         avir::CImageResizer<> image_resizer;
     };
+
+    void screenshot_creator::set_target_dimensions(vector_2D<uint16_t> target_dimensions)
+    {
+        downsample_dims = target_dimensions;
+    }
 
 } // namespace vecx_rl

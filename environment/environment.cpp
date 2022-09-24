@@ -7,7 +7,6 @@ extern "C"
 }
 
 #include "environment.hpp"
-#include "games.hpp"
 #include "image.hpp"
 #include "roms.hpp"
 
@@ -17,23 +16,38 @@ extern "C"
 
 using namespace vecx_rl;
 
-environment::environment(uint64_t frames, const vector_2D<uint16_t>& image_dims, bool enable_sound)
-    : emu_frames(frames), sc(image_dims)
+environment::environment(
+    uint64_t frames_per_step,
+    bool enable_window,
+    bool enable_sound,
+    const std::optional<vector_2D<uint16_t>>& image_dims)
+    : emu_frames(frames_per_step), window_enabled(enable_window), sound_enabled(enable_sound), screenshot_enabled(image_dims.has_value())
 {
-    open_window(&display); // TODO: disable rendering !!
+    // only render if window is shown or screenshots are required
+    if (screenshot_enabled || window_enabled)
+    {
+        open_window(&display, (uint8_t)enable_window);
+    }
+
+    if (screenshot_enabled)
+    {
+        sc.set_target_dimensions(image_dims.value());
+    }
 
     if (enable_sound)
     {
-        sound = enable_sound;
         e8910_init_sound();
     }
 }
 
 environment::~environment()
 {
-    close_window();
+    if (screenshot_enabled || window_enabled)
+    {
+        close_window();
+    }
 
-    if (sound)
+    if (sound_enabled)
     {
         e8910_done_sound();
     }
@@ -88,4 +102,17 @@ reward_t environment::step(const action& input)
     osint_emu(emu_frames);
 
     return rom->process_state();
+}
+
+std::optional<uint8_t*> environment::get_image()
+{
+    if (screenshot_enabled)
+    {
+        return sc.get_image();
+    }
+    else
+    {
+        std::cerr << "Screenshoting is not enabled!\n";
+        return {};
+    }
 }

@@ -23,7 +23,7 @@ typedef struct
 
 extern Display display;
 
-void open_window(Display* d);
+void open_window(Display* d, uint8_t show_window);
 
 void close_window();
 

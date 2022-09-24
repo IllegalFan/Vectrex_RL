@@ -4,17 +4,18 @@ using namespace vecx_rl;
 
 screenshot_creator::screenshot_creator(vector_2D<uint16_t> target_dimension) : image_resizer(8)
 {
-    sshot = (uint8_t*)malloc(display.width * display.height);
+    sshot = new uint8_t[display.width * display.height];
 
     if (target_dimension.width <= 0 || target_dimension.height <= 0)
     {
         downsampling = false;
+        sshot_downsampled = nullptr;
     }
     else
     {
         downsampling = true;
         downsample_dims = target_dimension;
-        sshot_downsampled = (uint8_t*)malloc(target_dimension.width * target_dimension.height);
+        sshot_downsampled = new uint8_t[target_dimension.width * target_dimension.height];
     }
 }
 
@@ -62,10 +63,10 @@ uint8_t* screenshot_creator::get_image()
 
 screenshot_creator::~screenshot_creator()
 {
-    free((void*)sshot);
+    delete[] sshot;
 
     if (downsampling)
     {
-        free((void*)sshot_downsampled);
+        delete[] sshot_downsampled;
     }
 }
