@@ -18,10 +18,11 @@ using namespace vecx_rl;
 
 environment::environment(
     uint64_t frames_per_step,
+    bool real_time,
     bool enable_window,
     bool enable_sound,
     const std::optional<vector_2D<uint16_t>>& image_dims)
-    : emu_frames(frames_per_step), window_enabled(enable_window), sound_enabled(enable_sound), screenshot_enabled(image_dims.has_value())
+    : emu_frames(frames_per_step), real_time(real_time), window_enabled(enable_window), sound_enabled(enable_sound), screenshot_enabled(image_dims.has_value())
 {
     // only render if window is shown or screenshots are required
     if (screenshot_enabled || window_enabled)
@@ -99,7 +100,7 @@ reward_t environment::step(const action& input)
     }
 
     periphery_emu(input.get_action()); // set registers
-    osint_emu(emu_frames);
+    osint_emu(emu_frames, (uint8_t)real_time);
 
     return rom->process_state();
 }

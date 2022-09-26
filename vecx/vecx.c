@@ -1056,7 +1056,7 @@ void vecx_emu(long cycles)
             vector_t* tmp;
 
             fcycles += FCYCLES_INIT;
-            
+
             if (display.renderer != NULL)
             {
                 render(&display);

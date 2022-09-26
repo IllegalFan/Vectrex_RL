@@ -7,7 +7,7 @@
 
 void init(const char* romfilename, const char* cartfilename);
 
-void osint_emu(const unsigned int emu_frames);
+void osint_emu(const unsigned int emu_frames, const uint8_t real_time);
 
 void periphery_emu(const uint8_t input);
 

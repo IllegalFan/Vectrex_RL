@@ -2,6 +2,8 @@
 #include "e8910.h"
 #include "vecx.h"
 
+#define CYCLES_PER_FRAME 30000
+
 #define EMU_TIMER 20 /* the emulators heart beats at 20 milliseconds */
 
 void init(const char* romfilename, const char* cartfilename)
@@ -71,13 +73,13 @@ void periphery_emu(const uint8_t input)
     }
 }
 
-void osint_emu(const unsigned int emu_frames)
+void osint_emu(const unsigned int emu_frames, const uint8_t real_time)
 {
-    Uint32 next_time = SDL_GetTicks() + EMU_TIMER;
+    Uint32 next_time = SDL_GetTicks() + ((real_time) ? EMU_TIMER : 0);
     SDL_Event e;
     for (unsigned int frames = 0; frames <= emu_frames; ++frames)
     {
-        vecx_emu((VECTREX_MHZ / 1000) * EMU_TIMER);
+        vecx_emu(CYCLES_PER_FRAME);
 
         if (SDL_PollEvent(&e))
         {
@@ -93,7 +95,7 @@ void osint_emu(const unsigned int emu_frames)
                 SDL_Delay(next_time - now);
             else
                 next_time = now;
-            next_time += EMU_TIMER;
+            next_time += ((real_time) ? EMU_TIMER : 0);
         }
     }
 }

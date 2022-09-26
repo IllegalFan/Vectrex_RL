@@ -29,6 +29,7 @@ namespace vecx_rl
         /**
          * Construct an environment which controls the vecx-emulator and the game.
          * @param frames_per_step: Number of frames for which vecx will emulate per step
+         * @param real_time: If true the emulation will happen in real time (50 frames per second). Else it will go as fast as the cpu can
          * @param enable_sound: En-/Disable sound output of vecx
          * @param enable_window: En-/Disable rendering of vecx
          * @param image_dims: If the option has a value, the environment will take a screenshot per step.
@@ -38,6 +39,7 @@ namespace vecx_rl
         environment(
             // vecx configuration
             uint64_t frames_per_step = 1,
+            bool real_time = true,
             bool enable_window = true,
             bool enable_sound = false,
             // screenshot configuration
@@ -84,6 +86,7 @@ namespace vecx_rl
 
     private:
         // configuration flags
+        bool real_time;
         bool window_enabled;
         bool sound_enabled;
         bool screenshot_enabled;

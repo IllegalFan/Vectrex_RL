@@ -31,7 +31,7 @@ int main(int argc, char** argv)
     vecx_rl::vector_2D<uint16_t> dims = {.width = 40, .height = 60};
     uint8_t* pixels = nullptr;
 
-    vecx_rl::environment env = vecx_rl::environment(25, true, false, dims);
+    vecx_rl::environment env = vecx_rl::environment(1, false, true, false, dims);
 
     vecx_rl::reward_t r = 0;
 
