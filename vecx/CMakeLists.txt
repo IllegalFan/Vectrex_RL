@@ -17,9 +17,15 @@ add_library(vecx
 )
 
 target_compile_definitions(vecx
-    PRIVATE D_REENTRANT
+    PRIVATE D_REENTRANT # recommended if using pthread
 )
 
 target_include_directories(vecx
     PUBLIC /usr/include/SDL2
+)
+
+# copy vectrex rom
+file(COPY rom_noIntro.dat rom.dat
+    DESTINATION ${PROJECT_BINARY_DIR}/vecx
+    NO_SOURCE_PERMISSIONS
 )

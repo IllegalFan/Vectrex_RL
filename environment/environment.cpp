@@ -11,7 +11,7 @@ extern "C"
 #include "roms.hpp"
 
 #include <algorithm>
-
+#include <filesystem>
 #include <iostream>
 
 using namespace vecx_rl;
@@ -69,9 +69,11 @@ void environment::load_rom(const std::string& cartfilename)
     {
         rom = *supported_rom;
 
+        std::filesystem::path rom_path(std::move(std::string(ROM_BASEDIR) + cartfilename));
+
         // vectrex rom (contains firmware and minestorm game)
-        const char* romfilename = "../../vecx/rom_noIntro.dat";
-        init(romfilename, cartfilename.c_str());
+        const char* romfilename = VECX_ROM;
+        init(romfilename, rom_path.c_str());
 
         reset();
     }

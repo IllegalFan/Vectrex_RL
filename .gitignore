@@ -4,3 +4,4 @@ venv
 *.map
 python
 **/main.*
+libs/*/*

@@ -10,7 +10,6 @@ add_executable(test
     games/ROM.hpp
     games/ROM.cpp
     games/unsupported_rom.hpp
-    # list of supported games
     games/roms.hpp
     games/frog_jump.hpp
     games/frog_jump.cpp
@@ -32,4 +31,12 @@ target_link_libraries(test
 
 target_compile_definitions(test
     PRIVATE DEBUG=0
+    PRIVATE VECX_ROM="../vecx/rom_noIntro.dat"
+    PRIVATE ROM_BASEDIR="../vectrex_roms/"
+)
+
+# copy game binaries
+file(COPY ${PROJECT_SOURCE_DIR}/res/vectrex_roms
+    DESTINATION ${PROJECT_BINARY_DIR}/
+    NO_SOURCE_PERMISSIONS
 )
