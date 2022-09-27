@@ -1,16 +1,16 @@
 # Extra cmake-file for avir since the original repo has none
 
 set(SOURCES
-avir/avir_dil.h
-avir/avir_float4_sse.h
-avir/avir_float8_avx.h
-avir/avir.h
-avir/lancir.h
+    src/avir_dil.h
+    src/avir_float4_sse.h
+    src/avir_float8_avx.h
+    src/avir.h
+    src/lancir.h
 )
 
 add_library(avir
-STATIC
-${SOURCES}
+    SHARED
+    ${SOURCES}
 )
 
 set_target_properties(avir

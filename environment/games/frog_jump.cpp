@@ -5,7 +5,7 @@ extern "C"
 #include "vecx.h"
 }
 
-#ifdef DEBUG
+#ifndef NDEBUG
 #include <iostream>
 #endif
 
@@ -64,7 +64,7 @@ reward_t frog_jump::process_state()
     reward = (score != 0) ? score - last_score : 0;
     last_score = score;
 
-#if DEBUG
+#ifndef NDEBUG
     std::cout << "Score: " << byte_swap16(*((uint16_t*)(ram + 0x82))) << " , REWARD_" << reward << std::endl;
 #endif
 

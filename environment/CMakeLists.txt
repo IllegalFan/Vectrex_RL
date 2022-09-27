@@ -1,6 +1,4 @@
-
-add_executable(test
-    main.cpp
+set(SOURCES
     environment.hpp
     environment.cpp
     action.hpp
@@ -15,13 +13,18 @@ add_executable(test
     games/frog_jump.cpp
 )
 
-target_include_directories(test
-    PRIVATE ../vecx
-    PRIVATE ./games
-    PRIVATE ../libs/avir
+add_library(vecx_rl 
+    SHARED
+    ${SOURCES}
 )
 
-target_link_libraries(test 
+target_include_directories(vecx_rl
+    PUBLIC ../vecx
+    PUBLIC ./games
+    PUBLIC ../extern/avir/src
+)
+
+target_link_libraries(vecx_rl 
     SDL2
     SDL2_gfx
     pthread
@@ -29,8 +32,7 @@ target_link_libraries(test
     avir
 )
 
-target_compile_definitions(test
-    PRIVATE DEBUG=0
+target_compile_definitions(vecx_rl
     PRIVATE VECX_ROM="../vecx/rom_noIntro.dat"
     PRIVATE ROM_BASEDIR="../vectrex_roms/"
 )

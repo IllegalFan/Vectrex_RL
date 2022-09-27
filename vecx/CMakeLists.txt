@@ -12,7 +12,7 @@ set(SOURCES
 )
 
 add_library(vecx 
-    STATIC
+    SHARED
     ${SOURCES}
 )
 

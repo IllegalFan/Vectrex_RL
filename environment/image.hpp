@@ -37,26 +37,6 @@ namespace vecx_rl
          */
         uint8_t* get_image();
 
-#if DEBUG
-    private:
-        /**
-         * A SDL_Surface with depth 8 (bit) is automatically created with an empty palette
-         * So this function greates a grayscale palette for the Surface
-         */
-        void set_grayscale_palette(SDL_Surface* s)
-        {
-            SDL_Color colors[256];
-            int i;
-
-            for (i = 0; i < 256; i++)
-            {
-                colors[i].r = colors[i].g = colors[i].b = i;
-            }
-
-            SDL_SetPaletteColors(s->format->palette, colors, 0, 256);
-        }
-#endif
-
     private:
         vector_2D<uint16_t> downsample_dims;
         bool downsampling;

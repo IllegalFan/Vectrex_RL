@@ -2,6 +2,25 @@
 
 using namespace vecx_rl;
 
+#ifndef NDEBUG
+/**
+ * A SDL_Surface with depth 8 (bit) is automatically created with an empty palette
+ * So this function greates a grayscale palette for the Surface
+ */
+void set_grayscale_palette(SDL_Surface* s)
+{
+    SDL_Color colors[256];
+    int i;
+
+    for (i = 0; i < 256; i++)
+    {
+        colors[i].r = colors[i].g = colors[i].b = i;
+    }
+
+    SDL_SetPaletteColors(s->format->palette, colors, 0, 256);
+}
+#endif
+
 screenshot_creator::screenshot_creator(vector_2D<uint16_t> target_dimension) : image_resizer(8)
 {
     sshot = new uint8_t[display.width * display.height];
@@ -31,7 +50,7 @@ uint8_t* screenshot_creator::get_image()
             sshot_downsampled, downsample_dims.width, downsample_dims.height,
             1, 0, 0);
 
-#if DEBUG
+#ifndef NDEBUG
         SDL_Surface* s_full;
         SDL_Surface* s_down;
         s_full = SDL_CreateRGBSurfaceFrom((void*)sshot, display.width, display.height, 8, display.width, 0, 0, 0, 0);
