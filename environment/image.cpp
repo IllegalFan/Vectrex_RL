@@ -1,5 +1,9 @@
 #include "image.hpp"
 
+#ifndef NDEBUG
+#include <iostream>
+#endif
+
 using namespace vecx_rl;
 
 #ifndef NDEBUG
@@ -21,11 +25,13 @@ void set_grayscale_palette(SDL_Surface* s)
 }
 #endif
 
-screenshot_creator::screenshot_creator(vector_2D<uint16_t> target_dimension) : image_resizer(8)
+screenshot_creator::screenshot_creator(std::pair<int, int> target_dimension) : image_resizer(8)
 {
     sshot = new uint8_t[display.width * display.height];
 
-    if (target_dimension.width <= 0 || target_dimension.height <= 0)
+    auto [width, height] = target_dimension;
+
+    if (width <= 0 || height <= 0)
     {
         downsampling = false;
         sshot_downsampled = nullptr;
@@ -34,7 +40,7 @@ screenshot_creator::screenshot_creator(vector_2D<uint16_t> target_dimension) : i
     {
         downsampling = true;
         downsample_dims = target_dimension;
-        sshot_downsampled = new uint8_t[target_dimension.width * target_dimension.height];
+        sshot_downsampled = new uint8_t[width * height];
     }
 }
 
@@ -44,17 +50,18 @@ uint8_t* screenshot_creator::get_image()
 
     if (downsampling)
     {
+        auto [width, height] = downsample_dims;
         image_resizer.resizeImage(
             sshot, display.width, display.height,
             0,
-            sshot_downsampled, downsample_dims.width, downsample_dims.height,
+            sshot_downsampled, width, height,
             1, 0, 0);
 
 #ifndef NDEBUG
         SDL_Surface* s_full;
         SDL_Surface* s_down;
         s_full = SDL_CreateRGBSurfaceFrom((void*)sshot, display.width, display.height, 8, display.width, 0, 0, 0, 0);
-        s_down = SDL_CreateRGBSurfaceFrom((void*)sshot_downsampled, downsample_dims.width, downsample_dims.height, 8, downsample_dims.width, 0, 0, 0, 0);
+        s_down = SDL_CreateRGBSurfaceFrom((void*)sshot_downsampled, width, height, 8, width, 0, 0, 0, 0);
 
         if (s_full == NULL || s_down == NULL)
         {

@@ -14,9 +14,9 @@
 #include "image.hpp"
 #include "unsupported_rom.hpp"
 
+#include <filesystem>
 #include <memory>
 #include <optional>
-#include <string>
 
 namespace vecx_rl
 {
@@ -43,15 +43,18 @@ namespace vecx_rl
             bool enable_window = true,
             bool enable_sound = false,
             // screenshot configuration
-            const std::optional<vector_2D<uint16_t>>& image_dims = {});
+            const std::optional<std::pair<int, int>>& image_dims = {});
         ~environment();
 
         /**
-         * Check if rom with given name is supported
-         * @param carfilename: Name of game that should be emulated
-         * @throws unsupported_rom: Throws if rom is not supported. See vecx_rl::ROM for details
+         * Load rom to the vecx emulator
+         * @param carfilename: Name of game that should be emulated. Must be the complete filename (e.g. 'frog_jump.bin').
+         * The file is first searched at the standard directory which is dependent on the install location.
+         * If not found there, it will search at the given path.
+         * @throws vecx_rl::unsupported_rom: When rom is not supported. See vecx_rl::ROM for details
+         * @throws std::filesystem::filesystem_error: When the rom could not be found at the standard directory or the given path
          */
-        void load_rom(const std::string& carfilename);
+        void load_rom(const std::filesystem::path& carfilename);
 
         /**
          * Emulate the configured number of frames with the given input
@@ -66,21 +69,25 @@ namespace vecx_rl
 
         /**
          * Return true if game has finished
+         * @throws std::bad_optional_access: Throws if rom was not loaded before
          */
         inline bool is_game_finished() const;
 
         /**
          * Get the current reward
+         * @throws std::bad_optional_access: Throws if rom was not loaded before
          */
         inline reward_t get_reward() const;
 
         /**
          * Get the actions that are legal for the current game
+         * @throws std::bad_optional_access: Throws if rom was not loaded before
          */
         inline std::vector<uint8_t> get_legal_actions() const;
 
         /**
          * Get current frame as input for the reinforcement learning agent
+         * Returns empty std::optional if screenshoting is not activated (see constructor)
          */
         std::optional<uint8_t*> get_image();
 
@@ -93,7 +100,7 @@ namespace vecx_rl
 
         uint64_t emu_frames;
         // current game
-        std::shared_ptr<ROM> rom;
+        std::optional<std::shared_ptr<ROM>> rom;
 
         screenshot_creator sc;
     };
@@ -102,17 +109,17 @@ namespace vecx_rl
 
     bool environment::is_game_finished() const
     {
-        return (rom->is_terminal());
-    }
-
-    std::vector<uint8_t> environment::get_legal_actions() const
-    {
-        return rom->get_legal_actions();
+        return rom.value()->is_terminal();
     }
 
     reward_t environment::get_reward() const
     {
-        return rom->get_reward();
+        return rom.value()->get_reward();
+    }
+
+    std::vector<uint8_t> environment::get_legal_actions() const
+    {
+        return rom.value()->get_legal_actions();
     }
 
 } // namespace vecx_rl

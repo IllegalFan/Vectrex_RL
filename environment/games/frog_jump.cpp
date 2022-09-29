@@ -65,7 +65,7 @@ reward_t frog_jump::process_state()
     last_score = score;
 
 #ifndef NDEBUG
-    std::cout << "Score: " << byte_swap16(*((uint16_t*)(ram + 0x82))) << " , REWARD_" << reward << std::endl;
+    // std::cout << "Score: " << byte_swap16(*((uint16_t*)(ram + 0x82))) << " , REWARD_" << reward << std::endl;
 #endif
 
     uint16_t alive = (uint16_t)ram[0x88];

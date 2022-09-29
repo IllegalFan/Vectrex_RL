@@ -32,9 +32,15 @@ target_link_libraries(vecx_rl
     avir
 )
 
+cmake_path(SET ROM_BASEDIR_REL "${PROJECT_SOURCE_DIR}/res/vectrex_roms/")
+cmake_path(ABSOLUTE_PATH ROM_BASEDIR_REL OUTPUT_VARIABLE ROM_BASEDIR_ABS)
+
+cmake_path(SET VECX_ROM_REL "${PROJECT_SOURCE_DIR}/vecx/rom_noIntro.dat")
+cmake_path(ABSOLUTE_PATH VECX_ROM_REL OUTPUT_VARIABLE VECX_ROM_ABS)
+
 target_compile_definitions(vecx_rl
-    PRIVATE VECX_ROM="../vecx/rom_noIntro.dat"
-    PRIVATE ROM_BASEDIR="../vectrex_roms/"
+    PRIVATE VECX_ROM="${VECX_ROM_ABS}"
+    PRIVATE ROM_BASEDIR="${ROM_BASEDIR_ABS}"
 )
 
 # copy game binaries
