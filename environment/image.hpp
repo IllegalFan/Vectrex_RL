@@ -3,11 +3,7 @@
 #include "avir.h"
 
 #include <utility>
-
-extern "C"
-{
-#include "display.h"
-}
+#include <vector>
 
 namespace vecx_rl
 {
@@ -28,7 +24,7 @@ namespace vecx_rl
         /**
          * Return image as pixel array of size <width * height> and values in [0, 254]
          */
-        uint8_t* get_image();
+        std::vector<uint8_t> get_image();
 
     private:
         std::pair<int, int> downsample_dims;

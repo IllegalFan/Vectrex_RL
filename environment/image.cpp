@@ -1,5 +1,10 @@
 #include "image.hpp"
 
+extern "C"
+{
+#include "display.h"
+}
+
 #ifndef NDEBUG
 #include <iostream>
 #endif
@@ -44,13 +49,13 @@ screenshot_creator::screenshot_creator(std::pair<int, int> target_dimension) : i
     }
 }
 
-uint8_t* screenshot_creator::get_image()
+std::vector<uint8_t> screenshot_creator::get_image()
 {
     get_pixels(&display, sshot);
 
+    auto [width, height] = downsample_dims;
     if (downsampling)
     {
-        auto [width, height] = downsample_dims;
         image_resizer.resizeImage(
             sshot, display.width, display.height,
             0,
@@ -84,7 +89,17 @@ uint8_t* screenshot_creator::get_image()
 #endif
     }
 
-    return ((downsampling) ? sshot_downsampled : sshot);
+    std::vector<uint8_t> image;
+    if (downsampling)
+    {
+        image.assign(sshot_downsampled, sshot_downsampled + (width * height));
+    }
+    else
+    {
+        image.assign(sshot, sshot + (display.width * display.height));
+    }
+
+    return image;
 }
 
 screenshot_creator::~screenshot_creator()

@@ -131,7 +131,7 @@ reward_t environment::step(const action& input)
     return rom.value()->process_state();
 }
 
-std::optional<uint8_t*> environment::get_image()
+std::optional<std::vector<uint8_t>> environment::get_image()
 {
     if (screenshot_enabled)
     {

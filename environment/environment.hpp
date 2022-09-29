@@ -89,7 +89,7 @@ namespace vecx_rl
          * Get current frame as input for the reinforcement learning agent
          * Returns empty std::optional if screenshoting is not activated (see constructor)
          */
-        std::optional<uint8_t*> get_image();
+        std::optional<std::vector<uint8_t>> get_image();
 
     private:
         // configuration flags
