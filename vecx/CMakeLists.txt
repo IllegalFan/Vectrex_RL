@@ -12,7 +12,7 @@ set(SOURCES
 )
 
 add_library(vecx 
-    SHARED
+    STATIC
     ${SOURCES}
 )
 
@@ -24,8 +24,6 @@ target_include_directories(vecx
     PUBLIC /usr/include/SDL2
 )
 
-# copy vectrex rom
-file(COPY rom_noIntro.dat rom.dat
-    DESTINATION ${PROJECT_BINARY_DIR}/vecx
-    NO_SOURCE_PERMISSIONS
+target_compile_options(vecx
+    PUBLIC -fPIC # necessary to be linked with the python module
 )

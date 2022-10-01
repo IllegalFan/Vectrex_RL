@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.21)
 
 project (
-    Vectrex_RL
+    pyvecx_rl
     LANGUAGES CXX C
     VERSION 1.0
 )
@@ -25,9 +25,9 @@ add_subdirectory(extern/avir)
 # python wrapper for c++11 and upwards
 add_subdirectory(extern/pybind11)
 
-##################
-# vecx_rl source #
-##################
+######################
+# (py)vecx_rl source #
+######################
 
 # vectrex emulator
 add_subdirectory(vecx)
@@ -37,3 +37,6 @@ add_subdirectory(environment)
 
 # python interface for vecx_rl
 add_subdirectory(python)
+
+# examples
+add_subdirectory(example/cpp-interface)

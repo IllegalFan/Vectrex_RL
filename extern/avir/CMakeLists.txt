@@ -9,7 +9,7 @@ set(SOURCES
 )
 
 add_library(avir
-    SHARED
+    STATIC
     ${SOURCES}
 )
 
