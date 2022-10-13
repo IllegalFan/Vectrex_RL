@@ -75,7 +75,8 @@ void periphery_emu(const uint8_t input)
 
 void osint_emu(const unsigned int emu_frames, const uint8_t real_time)
 {
-    Uint32 next_time = SDL_GetTicks() + ((real_time) ? EMU_TIMER : 0);
+    Uint32 ms_per_frame = (real_time) ? EMU_TIMER : 0;
+    Uint32 next_time = SDL_GetTicks() + ms_per_frame;
     SDL_Event e;
     for (unsigned int frames = 0; frames <= emu_frames; ++frames)
     {
@@ -95,7 +96,7 @@ void osint_emu(const unsigned int emu_frames, const uint8_t real_time)
                 SDL_Delay(next_time - now);
             else
                 next_time = now;
-            next_time += ((real_time) ? EMU_TIMER : 0);
+            next_time += ms_per_frame;
         }
     }
 }
