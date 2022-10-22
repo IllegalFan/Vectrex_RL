@@ -11,7 +11,7 @@
 
 int main(int argc, char** argv)
 {
-    std::pair<int, int> image_dims = {40 /* widht */, 60 /* height */};
+    std::pair<int, int> image_dims = {40 /* width */, 60 /* height */};
     std::vector<uint8_t> pixels;
 
     vecx_rl::environment env = vecx_rl::environment(1, true, true, true, image_dims);
