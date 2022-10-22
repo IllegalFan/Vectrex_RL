@@ -71,7 +71,7 @@ std::vector<uint8_t> screenshot_creator::get_image()
         if (s_full == NULL || s_down == NULL)
         {
             fprintf(stderr, "No surface: %s\n", SDL_GetError());
-            return nullptr;
+            return {};
         }
 
         set_grayscale_palette(s_full);
@@ -82,7 +82,7 @@ std::vector<uint8_t> screenshot_creator::get_image()
             fprintf(stderr, "No bitmap: %s\n", SDL_GetError());
             SDL_FreeSurface(s_full);
             SDL_FreeSurface(s_down);
-            return nullptr;
+            return {};
         }
         SDL_FreeSurface(s_full);
         SDL_FreeSurface(s_down);
