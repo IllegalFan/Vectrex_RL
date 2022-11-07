@@ -14,12 +14,12 @@ if __name__ == "__main__":
     pixels : list = []
 
     env = pyvecx_rl.environment(frames_per_step = 25,
-        real_time = True, 
+        real_time = True,
         enable_window = True,
         enable_sound = True,
         image_dims = image_dims
     )
-    
+
     cartridge = "frog_jump.bin"
 
     try:
@@ -34,6 +34,8 @@ if __name__ == "__main__":
     legal_actions : list = env.get_legal_actions()
 
     for episode in range(0, 10):
+        env.start_new_game()
+
         while(not env.is_game_finished()):
             action.event = legal_actions[randint(0,9) % len(legal_actions)]
 
@@ -44,5 +46,4 @@ if __name__ == "__main__":
             # feed reward and image to a reinforcement learning agent ...
 
         print("Episode: {}, Score: {}".format(episode, reward))
-        env.reset()
         reward = 0

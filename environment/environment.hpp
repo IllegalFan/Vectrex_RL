@@ -68,6 +68,11 @@ namespace vecx_rl
         void reset();
 
         /**
+         * Reset and start the a new game
+         */
+        void start_new_game();
+
+        /**
          * Return true if game has finished
          * @throws std::bad_optional_access: Throws if rom was not loaded before
          */

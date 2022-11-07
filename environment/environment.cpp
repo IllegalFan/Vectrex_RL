@@ -118,6 +118,22 @@ void environment::reset()
     }
 }
 
+/**
+ * Vectrex games require e.g. a button to be pressed to start the game
+ * Automatically starting the game saves time and reduces the action space of the machine learning agent
+ */
+void environment::start_new_game()
+{
+    reset();
+
+    action start_action;
+    start_action.set_action(rom.value()->get_start_game_action());
+
+    periphery_emu(start_action.get_action());
+    // Emulate until the screen appears where the player is requested to e.g. press a button to start the game
+    osint_emu(130, (uint8_t)0);
+}
+
 reward_t environment::step(const action& input)
 {
     if (rom.value()->is_terminal())

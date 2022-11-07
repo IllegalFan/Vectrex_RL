@@ -20,6 +20,8 @@ namespace vecx_rl
 
         reward_t process_state() override;
 
+        uint8_t get_start_game_action() override;
+
     private:
         uint16_t score;
         uint16_t last_score;

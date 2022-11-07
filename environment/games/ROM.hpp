@@ -62,6 +62,11 @@ namespace vecx_rl
         virtual reward_t process_state() = 0;
 
         /**
+         * Returns the action that must be pressed in order to start a game
+         */
+        virtual uint8_t get_start_game_action() = 0;
+
+        /**
          * True if the action is in the legal action set
          * @param input: Action to be checked
          */

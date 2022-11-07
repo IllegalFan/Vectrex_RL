@@ -11,7 +11,7 @@ extern "C"
 
 using namespace vecx_rl;
 
-frog_jump::frog_jump() : ROM({NOOP, BTN_2, BTN_4, JOY_LEFT, JOY_RIGHT})
+frog_jump::frog_jump() : ROM({NOOP, BTN_4, JOY_LEFT, JOY_RIGHT})
 {
 }
 
@@ -27,6 +27,11 @@ void frog_jump::reset()
     // reset score                vecx-view:
     ram[0x82] = (unsigned char)0x00; // MSB
     ram[0x83] = (unsigned char)0x00; // LSB
+}
+
+uint8_t frog_jump::get_start_game_action()
+{
+    return BTN_2;
 }
 
 bool frog_jump::is_terminal() const
