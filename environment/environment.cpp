@@ -104,9 +104,14 @@ void environment::load_rom(const std::filesystem::path& cartfilename)
     }
 }
 
+/**
+ * Note that `vecx_reset` overwrites the ram with incrementing integers (0,1,2,3,...)
+ * Also note that rom::process_state is called before the game actually starts
+ * So if a variable is expected to be e.g. 0 at the begining, that should be done in `ROM::reset`
+ */
 void environment::reset()
 {
-    vecx_reset();
+    vecx_reset(); // must be called first!
     if (rom.has_value())
     {
         rom.value()->reset();

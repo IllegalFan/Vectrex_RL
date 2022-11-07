@@ -13,7 +13,7 @@ set(SOURCES
     games/frog_jump.cpp
 )
 
-add_library(vecx_rl 
+add_library(vecx_rl
     STATIC
     ${SOURCES}
 )
@@ -24,7 +24,7 @@ target_include_directories(vecx_rl
     PUBLIC ../extern/avir/src
 )
 
-target_link_libraries(vecx_rl 
+target_link_libraries(vecx_rl
     SDL2
     SDL2_gfx
     pthread

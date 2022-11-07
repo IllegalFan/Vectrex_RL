@@ -63,7 +63,7 @@ namespace vecx_rl
         reward_t step(const action& input);
 
         /**
-         * Reset the environment and the emulator
+         * Reset the rom cartridge and the emulator
          */
         void reset();
 
