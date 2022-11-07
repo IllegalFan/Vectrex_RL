@@ -5,7 +5,7 @@
 from random import randint
 
 import sys
-sys.path.append(r'../build/python/')
+sys.path.append(r'../../build/python/')
 
 import pyvecx_rl
 
