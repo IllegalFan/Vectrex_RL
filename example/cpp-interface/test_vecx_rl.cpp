@@ -43,6 +43,8 @@ int main(int argc, char** argv)
 
     for (size_t episode = 0; episode < 10; ++episode)
     {
+        env.start_new_game();
+
         while (!env.is_game_finished())
         {
             rand_action = std::rand();
@@ -57,7 +59,6 @@ int main(int argc, char** argv)
         }
 
         std::cout << "Episode: " << episode << ", Score: " << r << "\n";
-        env.reset();
         r = 0;
     }
 
