@@ -3,6 +3,8 @@ from gym import spaces
 
 import numpy as np
 
+from PIL import Image
+
 import sys
 sys.path.append(r'../build/python/')
 
@@ -30,7 +32,7 @@ class FrogEnv(gym.Env):
         self.legal_actions = self.vecxEnv.get_legal_actions()
 
         self.action_space = spaces.Discrete(len(self.vecxEnv.get_legal_actions()))
-        self.observation_space = spaces.Box(low=0,high=255, shape=(2400,),dtype=np.int64)
+        self.observation_space = spaces.Box(low=0,high=255, shape=(40,60,1),dtype=np.uint8)
     
     def step(self,action):
         self.stepcounter += 1
@@ -60,6 +62,8 @@ class FrogEnv(gym.Env):
         #getting observation
         observation = self.vecxEnv.get_image()
         observation = np.array(observation)
+        observation = observation.astype(np.uint8)
+        observation = np.reshape(observation, (40,60,1))
 
         info={}
 
@@ -75,5 +79,9 @@ class FrogEnv(gym.Env):
         print("------------RESET----------------")
         observation = self.vecxEnv.get_image()
         observation = np.array(observation)
+        observation = observation.astype(np.uint8)
+        observation = np.reshape(observation, (40,60,1))
+        print(observation.dtype)
+        print(observation.shape)
         return observation
        

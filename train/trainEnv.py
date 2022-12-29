@@ -8,12 +8,12 @@ from datetime import datetime
 now = datetime.now()
 dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")
 
-env = FrogEnv(False, False)
+env = FrogEnv(False, True)
 
 models_dir = f"models/{dt_string}"
 logdir = f"logs/{dt_string}"
 
-model = PPO('MlpPolicy', env, verbose=1, tensorboard_log=logdir)
+model = PPO('CnnPolicy', env, verbose=1, tensorboard_log=logdir)
 
 TIMESTEPS = 20000
 iters = 0
