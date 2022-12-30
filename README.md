@@ -32,3 +32,8 @@ These memory locations can either be located on the linker map, which can be gen
 Be aware that the value returned by `ROM::get_name` must be equal to the binary name.
 
 After the new class is finished, it needs to be added to the array of supported roms in `games/roms.hpp`.
+
+Then the training environment needs to be implemented for the new game.
+Therefore a new python file, similar to `FrogEnv.py`, needs be created.
+This file needs to contain the `init`-, `step`-, and `render`-function. 
+Furthermore the individual action- and observation space needs to be implemented. 
